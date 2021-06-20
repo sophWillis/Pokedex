@@ -34,23 +34,36 @@ const PokemonListContainer = styled.div`
   display: grid;
   grid-template-columns: auto auto auto auto;
   grid-gap: 15px;
-  margin: 30px;
+  margin: 0 20px;
+
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: auto auto auto;
+  }
+
+  @media screen and (max-width: 900px) {
+    grid-template-columns: auto auto;
+  }
+
+  @media screen and (max-width: 480px) {
+    grid-template-columns: auto auto;
+  }
 `;
 
 const PokemonCard = styled(Link)`
   text-decoration: none;
-  color: black;
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  border-radius: 15px;
+  padding: 10px;
 `;
 
 const PokemonImg = styled.img`
-  width: 100px;
+  width: 50px;
 `;
 
-const PokemonName = styled.h1`
+const PokemonName = styled.h3`
   text-transform: capitalize;
 `;

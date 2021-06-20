@@ -26,10 +26,10 @@ export const backgroundColors = {
     electric: "#F2CB55",
     fairy: "#EBA8C3",
     fighting: "#EB4971",
-    fire: "#FFA756",
+    fire: "#FB6C6C",
     flying: "#83A2E3",
     ghost: "#8571BE",
-    grass: "#8BBE8A",
+    grass: "#49D0AF",
     ground: "#F78551",
     ice: "#91D8DF",
     normal: "#B5B9C4",
@@ -37,5 +37,5 @@ export const backgroundColors = {
     psychic: "#FF6568",
     rock: "#D4C294",
     steel: "#4C91B3",
-    water: "#58ABF6"
+    water: "#76BDFD"
 };

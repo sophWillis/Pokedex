@@ -14,7 +14,7 @@ export default Navbar;
 const Nav = styled.nav`
   display: flex;
   align-items: center;
-  padding-left: 30px;
+  padding-left: 20px;
   height: 80px;
 `;
 

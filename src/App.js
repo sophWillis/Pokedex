@@ -8,7 +8,6 @@ import Pokemon from "./components/layouts/Pokemon";
 const App = () => {
   return (
     <Router>
-      <Navbar />
       <Switch>
         <Route exact path="/" component={Dashboard} />
         <Route exact path="/pokemon/:pokemonIndex" component={Pokemon} />
