@@ -1,22 +1,23 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { backgroundColors } from "../assets/colors";
 
-const PokemonList = ({ pokemon }) => {
+const PokemonList = ({ allPokemons }) => {
+
   return (
     <PokemonListContainer>
-      {pokemon.map((p) => {
-        const pokemonIndex = p.url.split("/")[p.url.split("/").length - 2];
+      {allPokemons.map((p) => {
 
         return (
-          <PokemonCard to={`pokemon/${pokemonIndex}`}>
+          <PokemonCard to={`pokemon/${p.id}`} style={{ backgroundColor: backgroundColors[p.types[0].type.name] }}>
             <span>
-              #{pokemonIndex < 10 ? "0" : ""}
-              {pokemonIndex < 100 ? "0" : ""}
-              {pokemonIndex}
+              #{p.id < 10 ? "0" : ""}
+              {p.id < 100 ? "0" : ""}
+              {p.id}
             </span>
             <PokemonImg
-              src={`https://pokeres.bastionbot.org/images/pokemon/${pokemonIndex}.png`}
+              src={`https://pokeres.bastionbot.org/images/pokemon/${p.id}.png`}
               alt={p.name}
             />
             <PokemonName>{p.name}</PokemonName>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import axios from "axios";
+import { backgroundColors } from "../../assets/colors";
 
 const Pokemon = () => {
   const [pokemon, setPokemon] = useState({});
@@ -10,10 +12,9 @@ const Pokemon = () => {
     let cancel;
     axios
       .get(
-        `https://pokeapi.co/api/v2/pokemon/${
-          document.location.pathname.split("/")[
-            document.location.pathname.split("/").length - 1
-          ]
+        `https://pokeapi.co/api/v2/pokemon/${document.location.pathname.split("/")[
+        document.location.pathname.split("/").length - 1
+        ]
         }`,
         {
           cancelToken: new axios.CancelToken((c) => (cancel = c)),
@@ -22,7 +23,6 @@ const Pokemon = () => {
       .then((res) => {
         setLoading(false);
         setPokemon(res.data);
-        console.log(pokemon);
       });
 
     return () => cancel();
@@ -31,10 +31,14 @@ const Pokemon = () => {
   if (loading) return "Loading...";
 
   return (
-    <>
+    <PokemonContainer style={{ backgroundColor: backgroundColors[pokemon.types && pokemon.types[0] && pokemon.types[0].type && pokemon.types[0].type.name] }}>
       <h1>{pokemon.name}</h1>
-    </>
+    </PokemonContainer>
   );
 };
 
 export default Pokemon;
+
+const PokemonContainer = styled.div`
+  height: 100vh;
+`;
