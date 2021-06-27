@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { IoSearchSharp } from "react-icons/io5";
 import { backgroundColors } from "../../assets/colors";
 import { Link } from "react-router-dom";
+import logic from "../../logic";
 
 const Home = () => {
   const [pokemon, setPokemon] = useState(""),
@@ -48,14 +49,14 @@ const Home = () => {
     const toArray = [];
     setLoading(true);
 
-    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
-      .then((res) => res.json())
+    logic.getPokemonByName(pokemon)
       .then((res) => {
         res.id && toArray.push(res);
         setLoading(false);
         setPokemonData(toArray);
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         setLoading(false);
         setError("Pokémon not found");
       });
