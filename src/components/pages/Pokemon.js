@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
 import { backgroundColors } from "../../assets/colors";
 import Heart from "react-animated-heart";
 
@@ -23,23 +22,14 @@ const Pokemon = () => {
 
   useEffect(() => {
     setLoading(true);
-    let cancel;
-    axios
-      .get(
-        `https://pokeapi.co/api/v2/pokemon/${document.location.pathname.split("/")[
-        document.location.pathname.split("/").length - 1
-        ]
-        }`,
-        {
-          cancelToken: new axios.CancelToken((c) => (cancel = c)),
-        }
-      )
-      .then((res) => {
+    fetch(`https://pokeapi.co/api/v2/pokemon/${document.location.pathname.split("/")[
+      document.location.pathname.split("/").length - 1
+    ]}`)
+      .then(res => res.json())
+      .then(res => {
         setLoading(false);
-        setPokemon(res.data);
+        setPokemon(res);
       });
-
-    return () => cancel();
   }, []);
 
   return pokemon && (

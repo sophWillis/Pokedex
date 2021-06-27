@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { IoSearchSharp } from "react-icons/io5";
 import { backgroundColors } from "../../assets/colors";
 import { Link } from "react-router-dom";
@@ -15,58 +14,59 @@ const Home = () => {
     [loadMore, setLoadMore] = useState("https://pokeapi.co/api/v2/pokemon"),
     [bgText, setBgText] = useState([]);
 
-
   const getBgText = result => {
-    result.forEach(async (pokemon) => {
-      const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`)
-      const data = await res.json();
-
-      setBgText(data.names[0].name);
-    })
+    result.forEach(pokemon => {
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`)
+        .then(res => res.json())
+        .then(res => setBgText(res.names[0].name))
+    });
   };
 
   const createPokemonObject = result => {
-    result.forEach(async (pokemon) => {
-      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
-      const data = await res.json();
-
-      setLoading(false);
-      setAllPokemons(currentList => [...currentList, data]);
+    result.forEach(pokemon => {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+        .then(res => res.json())
+        .then(res => {
+          setLoading(false);
+          setAllPokemons((currentList) => [...currentList, res]);
+        })
     });
-  }
+  };
 
-  const getAllPokemons = async () => {
+  const getAllPokemons = () => {
     setLoading(true);
-    const res = await fetch(loadMore);
-    const data = await res.json();
+    fetch(loadMore)
+      .then(res => res.json())
+      .then(res => {
+        setLoadMore(res.next);
+        createPokemonObject(res.results);
+        getBgText(res.results);
+      })
+  };
 
-    setLoadMore(data.next);
-    createPokemonObject(data.results);
-    getBgText(data.results);
-  }
-
-  const getPokemonByName = async () => {
+  const getPokemonByName = () => {
     const toArray = [];
     setLoading(true);
-    try {
-      const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`,
-        res = await axios.get(url);
 
-      res.data.id && toArray.push(res.data);
-      setLoading(false);
-      setPokemonData(toArray);
-    } catch {
-      setLoading(false);
-      setError("Pokémon not found");
-    }
+    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
+      .then((res) => res.json())
+      .then((res) => {
+        res.id && toArray.push(res);
+        setLoading(false);
+        setPokemonData(toArray);
+      })
+      .catch(() => {
+        setLoading(false);
+        setError("Pokémon not found");
+      });
   };
 
   useEffect(() => {
     getPokemonByName();
     getAllPokemons();
-  }, [])
+  }, []);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setPokemonData([]);
     setError("");
     setPokemon(e.target.value.toLowerCase());
@@ -76,34 +76,30 @@ const Home = () => {
     }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setHideList(true);
     getPokemonByName();
-  }
+  };
 
   return (
     <HomeContainer>
       <Form onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          placeholder="Search"
-          onChange={handleChange}
-        />
+        <Input type="text" placeholder="Search" onChange={handleChange} />
         <SearchIcon />
       </Form>
       <PokeballLoader loading={loading}>
         <div></div>
       </PokeballLoader>
-      {error &&
-        <AlertBox>{error}</AlertBox>
-      }
+      {error && <AlertBox>{error}</AlertBox>}
       <PokemonListContainer>
         {allPokemons.map((item, index) => (
           <PokemonCard
             key={index}
             to={`pokemon/${item.id}`}
-            style={{ backgroundColor: `${backgroundColors[item.types[0].type.name]}` }}
+            style={{
+              backgroundColor: `${backgroundColors[item.types[0].type.name]}`,
+            }}
             hideList={hideList}
           >
             <BgText>{bgText}</BgText>
@@ -115,7 +111,14 @@ const Home = () => {
               <PokemonName>{item.name}</PokemonName>
               <PokemonTypes>
                 {item.types.map((item, index) => (
-                  <Type key={index} style={{ backgroundColor: backgroundColors[item.type.name] }}>{item.type.name}</Type>
+                  <Type
+                    key={index}
+                    style={{
+                      backgroundColor: backgroundColors[item.type.name],
+                    }}
+                  >
+                    {item.type.name}
+                  </Type>
                 ))}
               </PokemonTypes>
             </PokemonText>
@@ -126,12 +129,17 @@ const Home = () => {
             </PokemonId>
           </PokemonCard>
         ))}
-      </PokemonListContainer >
+      </PokemonListContainer>
       {pokemonData?.map((item, index) => (
         <PokemonCard
           key={index}
           to={`pokemon/${item.id}`}
-          style={{ backgroundColor: `${backgroundColors[item.types && item.types[0] && item.types[0].type.name]}` }}
+          style={{
+            backgroundColor: `${backgroundColors[
+              item.types && item.types[0] && item.types[0].type.name
+            ]
+              }`,
+          }}
         >
           <PokemonImg
             src={item.sprites?.other["official-artwork"]?.front_default}
@@ -143,7 +151,10 @@ const Home = () => {
               {item.types?.map((item, index) => (
                 <Type
                   key={index}
-                  style={{ backgroundColor: backgroundColors[item.type.name] }}>{item.type.name}</Type>
+                  style={{ backgroundColor: backgroundColors[item.type.name] }}
+                >
+                  {item.type.name}
+                </Type>
               ))}
             </PokemonTypes>
           </PokemonText>
@@ -154,10 +165,12 @@ const Home = () => {
           </PokemonId>
         </PokemonCard>
       ))}
-      <LoadMore onClick={() => getAllPokemons()} loading={loading}>Load More</LoadMore>
+      <LoadMore onClick={() => getAllPokemons()} loading={loading}>
+        Load More
+      </LoadMore>
     </HomeContainer>
-  )
-}
+  );
+};
 
 export default Home;
 
@@ -231,12 +244,16 @@ const PokeballLoader = styled.div`
     border-radius: 50%;
     z-index: 10;
     box-shadow: 0 0 0 5px black;
-    animation: blink .5s alternate infinite;
-    }
+    animation: blink 0.5s alternate infinite;
+  }
 
   @keyframes blink {
-    from { background: #eee;}
-    to { background: #e74c3c; }
+    from {
+      background: #eee;
+    }
+    to {
+      background: #e74c3c;
+    }
   }
 `;
 
@@ -254,7 +271,7 @@ const PokemonListContainer = styled.div`
   }
 
   @media screen and (max-width: 768px) {
-    display: "block"
+    display: "block";
   }
 `;
 
@@ -271,7 +288,7 @@ const PokemonCard = styled(Link)`
 const BgText = styled.h1`
   position: absolute;
   left: 0;
-  color: rgba(255, 255, 255, .2);
+  color: rgba(255, 255, 255, 0.2);
   font-size: 3.5rem;
   width: 100%;
   text-align: center;
@@ -307,7 +324,7 @@ const Type = styled.div`
   padding: 5px 10px;
   margin-right: 5px;
   border-radius: 5px;
-  font-size: .75rem;
+  font-size: 0.75rem;
   text-transform: capitalize;
   position: relative;
   font-weight: 600;
@@ -320,20 +337,20 @@ const Type = styled.div`
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, .1);
+    background-color: rgba(0, 0, 0, 0.1);
   }
 `;
 
 const AlertBox = styled.div`
-    background-color: #f2dede;
-    border: 1px solid #ebccd1;
-    color: #a94442;
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    font-weight: 400;
-    width: 100%;
-    font-size: .875rem;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  color: #a94442;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  font-weight: 400;
+  width: 100%;
+  font-size: 0.875rem;
 `;
 
 const LoadMore = styled.button`
