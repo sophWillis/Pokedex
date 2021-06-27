@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Navbar from "./Navbar";
 import PokemonList from "../PokemonList";
+import Search from "../Search";
 
 const Dashboard = () => {
   const [allPokemons, setAllPokemons] = useState([]);
@@ -10,22 +10,22 @@ const Dashboard = () => {
   );
   const [loading, setLoading] = useState(true);
 
+  function createPokemonObject(result) {
+    result.forEach(async (pokemon) => {
+      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
+      const data = await res.json();
+
+      setLoading(false);
+      setAllPokemons(currentList => [...currentList, data]);
+    });
+  }
+
   const getAllPokemons = async () => {
     setLoading(true);
     const res = await fetch(loadMore);
     const data = await res.json();
 
     setLoadMore(data.next);
-
-    function createPokemonObject(result) {
-      result.forEach(async (pokemon) => {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
-        const data = await res.json();
-
-        setLoading(false);
-        setAllPokemons(currentList => [...currentList, data]);
-      });
-    }
 
     createPokemonObject(data.results);
   }
@@ -35,22 +35,28 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <>
-      <Navbar />
+    <PokemonListContainer>
+      <Search />
       <PokemonList allPokemons={allPokemons} />
       <LoadMore onClick={() => getAllPokemons()} loading={loading}>Load More</LoadMore>
       <PokeballLoader loading={loading}>
         <div></div>
       </PokeballLoader>
-    </>
+    </PokemonListContainer>
   );
 };
 
 export default Dashboard;
 
+const PokemonListContainer = styled.div`
+  background-color: #fafafa;
+  padding-top: 80px;
+  padding: 80px 20px 20px;
+`;
+
 const LoadMore = styled.button`
   display: ${({ loading }) => (loading ? "none" : "block")};
-  margin: 20px auto;
+  margin: 20px auto 0;
   padding: 10px 15px;
   border: none;
 `;

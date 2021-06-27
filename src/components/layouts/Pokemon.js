@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { backgroundColors } from "../../assets/colors";
@@ -6,6 +7,17 @@ import { backgroundColors } from "../../assets/colors";
 const Pokemon = () => {
   const [pokemon, setPokemon] = useState({});
   const [loading, setLoading] = useState(true);
+  const [bgText, setBgText] = useState("");
+
+  const getBgText = (pokemonName) => {
+    fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`)
+      .then(res => res.json())
+      .then(res => setBgText(res.names[0].name));
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [useLocation()]);
 
   useEffect(() => {
     setLoading(true);
@@ -28,12 +40,22 @@ const Pokemon = () => {
     return () => cancel();
   }, []);
 
-  return (
+  return pokemon && (
     <PokemonContainer style={{ backgroundColor: backgroundColors[pokemon.types && pokemon.types[0] && pokemon.types[0].type && pokemon.types[0].type.name] }}>
       <PokeballLoader loading={loading}>
-        <div></div>
+        <PokeballBlinker></PokeballBlinker>
       </PokeballLoader>
-      <h1>{pokemon.name}</h1>
+      <PokemonDisplay>
+        <PokemonName>{pokemon.name}</PokemonName>
+        <BgText getBgText={getBgText(pokemon.name)}>{bgText}</BgText>
+        <PokemonImg src={pokemon.sprites?.other["official-artwork"]?.front_default} alt={pokemon.name} />
+        <PokemonId>
+          #{pokemon.id < 10 ? "0" : ""}
+          {pokemon.id < 100 ? "0" : ""}
+          {pokemon.id}
+        </PokemonId>
+      </PokemonDisplay>
+      <PokemonStatsCard></PokemonStatsCard>
     </PokemonContainer>
   );
 };
@@ -41,20 +63,22 @@ const Pokemon = () => {
 export default Pokemon;
 
 const PokemonContainer = styled.div`
-  height: 100vh;
-  color: white;
+  position: relative;
+  height: calc(100vh - 80px);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 const PokeballLoader = styled.div`
   display: ${({ loading }) => (loading ? "block" : "none")};
-  position: relative;
+  height: 100vh;
+  position: absolute;
   background-color: white;
   width: 100px;
   height: 100px;
-  border: 5px solid;
+  border: 5px solid #000;
   overflow: hidden;
   border-radius: 50%;
   box-shadow: inset -5px 5px 0 5px #ccc;
@@ -75,25 +99,66 @@ const PokeballLoader = styled.div`
     top: calc(50% - 5px);
     width: 100%;
     height: 10px;
-    background-color: black;
+    background-color: #000;
   }
+`;
 
-  div {
-    position: absolute;
-    top: calc(50% - 15px);
-    left: calc(50% - 15px);
-    width: 30px;
-    height: 30px;
-    background: #7f8c8d;
-    border: 5px solid #fff;
-    border-radius: 50%;
-    z-index: 10;
-    box-shadow: 0 0 0 5px black;
-    animation: blink .5s alternate infinite;
-    }
+const PokeballBlinker = styled.div`
+  position: absolute;
+  top: calc(50% - 15px);
+  left: calc(50% - 15px);
+  width: 30px;
+  height: 30px;
+  background: #7f8c8d;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 0 0 5px black;
+  animation: blink .5s alternate infinite;
 
   @keyframes blink {
     from { background: #eee;}
     to { background: #e74c3c; }
   }
+`;
+
+const BgText = styled.h1`
+  color: rgba(255, 255, 255, .5);
+  font-size: 4rem;
+  text-align: center;
+`;
+
+const PokemonDisplay = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const PokemonName = styled.h1`
+  font-weight: 800;
+  font-size: 50px;
+  text-align: center;
+  text-transform: capitalize;
+  color: rgba(255, 255, 255, .5);
+`;
+
+const PokemonImg = styled.img`
+  width: 300px;
+`;
+
+const PokemonId = styled.div`
+  text-align: right;
+  font-weight: 700;
+  font-size: 40px;
+  color: rgba(255, 255, 255, .5);
+`;
+
+const PokemonStatsCard = styled.div`
+  position: absolute;
+  top: 80vh;
+  height: 100vh;
+  width: 100%;
+  background-color: #fafafa;
+  border-radius: 35px 35px 0 0;
 `;
