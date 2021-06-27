@@ -57,7 +57,7 @@ const Home = () => {
       setPokemonData(toArray);
     } catch {
       setLoading(false);
-      setError("Pokemon not found");
+      setError("Pokémon not found");
     }
   };
 
@@ -328,7 +328,7 @@ const AlertBox = styled.div`
     background-color: #f2dede;
     border: 1px solid #ebccd1;
     color: #a94442;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     padding: 15px;
     border-radius: 5px;
     font-weight: 400;
@@ -338,7 +338,7 @@ const AlertBox = styled.div`
 
 const LoadMore = styled.button`
   display: ${({ loading }) => (loading ? "none" : "block")};
-  margin: 20px auto 0;
+  margin: 0 auto;
   padding: 10px 15px;
   border: none;
 `;
