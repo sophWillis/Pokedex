@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import LogoImg from "../../assets/images/logo.png"
-import PokeballImg from "../../assets/images/user-icon.png";
+import LogoImg from "../assets/images/logo.png"
+import PokeballImg from "../assets/images/user-icon.png";
 import { CgChevronLeft } from "react-icons/cg";
 
-const Navbar = ({ toggleDropdown }) => {
+const Navbar = ({ toggleSidebar }) => {
   return (
     <Nav>
       <NavLogoLink to="/" >
@@ -16,7 +16,7 @@ const Navbar = ({ toggleDropdown }) => {
       </NavLogoLink>
       <NavPokeball
         src={PokeballImg} alt="Pokéball Icon"
-        onClick={toggleDropdown}
+        onClick={toggleSidebar}
       />
     </Nav>
   );

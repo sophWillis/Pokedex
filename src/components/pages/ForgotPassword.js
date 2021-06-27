@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import { useAuth } from "../contexts/AuthContext";
-import OopsImg from "../assets/images/oops.png";
+import { useAuth } from "../../contexts/AuthContext";
+import OopsImg from "../../assets/images/oops.png";
 import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {

@@ -1,28 +1,28 @@
 import "./App.css";
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Navbar from "./components/layouts/Navbar";
-import Dropdown from "./components/layouts/Dropdown";
-import Dashboard from "./components/layouts/Dashboard";
-import Pokemon from "./components/layouts/Pokemon";
-import Favourites from "./components/layouts/Favourites";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
-import ForgotPassword from "./components/ForgotPassword";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./components/pages/Dashboard";
+import Pokemon from "./components/pages/Pokemon";
+import Favourites from "./components/pages/Favourites";
+import Signup from "./components/pages/Signup";
+import Login from "./components/pages/Login";
+import ForgotPassword from "./components/pages/ForgotPassword";
 import { AuthProvider } from "./contexts/AuthContext";
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleDropdown = () => {
+  const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
   return (
     <Router>
       <AuthProvider>
-        <Navbar toggleDropdown={toggleDropdown} />
-        <Dropdown isOpen={isOpen} />
+        <Navbar toggleSidebar={toggleSidebar} />
+        <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
         <Switch>
           <Route exact path="/" component={Dashboard} />
           <Route exact path="/pokemon/:pokemonIndex" component={Pokemon} />

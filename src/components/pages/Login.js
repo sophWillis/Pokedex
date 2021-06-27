@@ -1,14 +1,13 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import { useAuth } from "../contexts/AuthContext";
-import OopsImg from "../assets/images/oops.png";
+import { useAuth } from "../../contexts/AuthContext";
+import OopsImg from "../../assets/images/oops.png";
 import { Link, useHistory } from "react-router-dom";
 
-const Signup = () => {
+const Login = () => {
     const emailRef = useRef(),
         passwordRef = useRef(),
-        passwordConfirmationRef = useRef(),
-        { signup } = useAuth(),
+        { login } = useAuth(),
         [error, setError] = useState(""),
         [loading, setLoading] = useState(false),
         history = useHistory();
@@ -16,24 +15,20 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
-            return setError("Passwords do not match");
-        }
-
         try {
             setError("");
             setLoading(true);
-            await signup(emailRef.current.value, passwordRef.current.value);
+            await login(emailRef.current.value, passwordRef.current.value);
             history.push("/");
         } catch {
-            setError("Failed to create an account");
+            setError("Failed to log in");
         }
         setLoading(false);
     };
 
     return (
         <Card>
-            <SignUpH1>Sign Up</SignUpH1>
+            <SignUpH1>Log In</SignUpH1>
             {error &&
                 <Alert>
                     <img src={OopsImg} alt="Oops" />
@@ -45,16 +40,15 @@ const Signup = () => {
                 <Input type="email" id="email" ref={emailRef} required />
                 <Label>Password</Label>
                 <Input type="password" id="password" ref={passwordRef} required />
-                <Label>Confirm password</Label>
-                <Input type="password" id="password-confirm" ref={passwordConfirmationRef} required />
-                <Button disabled={loading} type="submit">Sign Up</Button>
+                <Button disabled={loading} type="submit">Log In</Button>
             </Form>
-            <div>Already have an account? <RouterLink to="/login">Log In</RouterLink></div>
+            <LinkText><RouterLink to="/forgot-password">Forgot password?</RouterLink></LinkText>
+            <LinkText>Don't have an account? <RouterLink to="/signup">Sign Up</RouterLink></LinkText>
         </Card>
     )
 }
 
-export default Signup;
+export default Login;
 
 const Card = styled.div`
     height: 100vh;
@@ -129,6 +123,10 @@ const AlertBox = styled.div`
     font-weight: 400;
     width: 100%;
     font-size: .875rem;
+`;
+
+const LinkText = styled.div`
+    margin-bottom: 5px;
 `;
 
 const RouterLink = styled(Link)`
