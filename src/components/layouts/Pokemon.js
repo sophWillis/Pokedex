@@ -3,11 +3,13 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { backgroundColors } from "../../assets/colors";
+import Heart from "react-animated-heart";
 
 const Pokemon = () => {
-  const [pokemon, setPokemon] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [bgText, setBgText] = useState("");
+  const [pokemon, setPokemon] = useState({}),
+    [loading, setLoading] = useState(true),
+    [bgText, setBgText] = useState(""),
+    [isClick, setClick] = useState(false);
 
   const getBgText = (pokemonName) => {
     fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`)
@@ -55,7 +57,11 @@ const Pokemon = () => {
           {pokemon.id}
         </PokemonId>
       </PokemonDisplay>
-      <PokemonStatsCard></PokemonStatsCard>
+      <PokemonStatsCard>
+      </PokemonStatsCard>
+      <HeartButton>
+        <Heart isClick={isClick} onClick={() => setClick(!isClick)} />
+      </HeartButton>
     </PokemonContainer>
   );
 };
@@ -64,7 +70,7 @@ export default Pokemon;
 
 const PokemonContainer = styled.div`
   position: relative;
-  height: calc(100vh - 80px);
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,10 +135,7 @@ const BgText = styled.h1`
 `;
 
 const PokemonDisplay = styled.div`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  margin-bottom: 80px;
 `;
 
 const PokemonName = styled.h1`
@@ -159,6 +162,13 @@ const PokemonStatsCard = styled.div`
   top: 80vh;
   height: 100vh;
   width: 100%;
-  background-color: #fafafa;
   border-radius: 35px 35px 0 0;
+  background-color: #fff;
+`;
+
+const HeartButton = styled.div`
+  position: fixed;
+  bottom: 0;
+  align-self: flex-end;
+  -webkit-tap-highlight-color: transparent;
 `;

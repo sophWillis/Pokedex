@@ -34,6 +34,7 @@ const Nav = styled.nav`
   background-color: transparent;
   z-index: 1;
   padding: 0 15px;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const NavLogoLink = styled(Link)``;
@@ -44,7 +45,7 @@ const NavLogo = styled.img`
 
 const NavBackArrow = styled(CgChevronLeft)`
   font-size: 30px;
-  color: #fafafa;
+  color: #fff;
   vertical-align: middle;
 `;
 

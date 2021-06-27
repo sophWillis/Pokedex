@@ -91,6 +91,7 @@ const PokemonId = styled.span`
   position: absolute;
   bottom: 20px;
   right: 20px;
+  font-weight: 700;
 `;
 
 const PokemonTypes = styled.div``;
@@ -103,6 +104,7 @@ const Type = styled.div`
   font-size: .75rem;
   text-transform: capitalize;
   position: relative;
+  font-weight: 600;
 
   :first-child:before {
     content: "";

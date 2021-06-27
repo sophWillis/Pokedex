@@ -49,7 +49,6 @@ const Dashboard = () => {
 export default Dashboard;
 
 const PokemonListContainer = styled.div`
-  background-color: #fafafa;
   padding-top: 80px;
   padding: 80px 20px 20px;
 `;
