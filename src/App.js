@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import Dashboard from "./components/pages/Dashboard";
+import Home from "./components/pages/Home";
 import Pokemon from "./components/pages/Pokemon";
 import Favourites from "./components/pages/Favourites";
 import Signup from "./components/pages/Signup";
@@ -24,7 +24,7 @@ const App = () => {
         <Navbar toggleSidebar={toggleSidebar} />
         <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
         <Switch>
-          <Route exact path="/" component={Dashboard} />
+          <Route exact path="/" component={Home} />
           <Route exact path="/pokemon/:pokemonIndex" component={Pokemon} />
           <Route exact path="/favourites" component={Favourites} />
           <Route path="/signup" component={Signup} />
