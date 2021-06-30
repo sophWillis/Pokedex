@@ -10,7 +10,7 @@ const Home = () => {
     [allPokemons, setAllPokemons] = useState([]),
     [pokemonData, setPokemonData] = useState([]),
     [error, setError] = useState(""),
-    [hideList, setHideList] = useState(false),
+    [hidden, setHidden] = useState(false),
     [loading, setLoading] = useState(true),
     [loadMore, setLoadMore] = useState("https://pokeapi.co/api/v2/pokemon"),
     [species, setSpecies] = useState([]);
@@ -88,13 +88,13 @@ const Home = () => {
     setPokemon(e.target.value.toLowerCase());
 
     if (e.target.value === "") {
-      setHideList(false);
+      setHidden(false);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setHideList(true);
+    setHidden(true);
     getPokemonByName();
   };
 
@@ -118,7 +118,7 @@ const Home = () => {
                 backgroundColors[item.types && item.types[0]?.type?.name]
               }`,
             }}
-            hideList={hideList}
+            hidden={hidden}
           >
             {species.map((speciesItem, index) =>
               speciesItem.name === item.name ? (
@@ -166,6 +166,15 @@ const Home = () => {
             }`,
           }}
         >
+          {species.map((speciesItem, index) =>
+            speciesItem.name === item.name ? (
+              <BgText key={index}>
+                {speciesItem.names && speciesItem.names[0].name}
+              </BgText>
+            ) : (
+              ""
+            )
+          )}
           <PokemonImg
             src={item.sprites?.other["official-artwork"]?.front_default}
             alt={item.name}
@@ -190,7 +199,11 @@ const Home = () => {
           </PokemonId>
         </PokemonCard>
       ))}
-      <LoadMore onClick={() => getAllPokemons()} loading={loading}>
+      <LoadMore
+        onClick={() => getAllPokemons()}
+        loading={loading}
+        hidden={hidden}
+      >
         Load More
       </LoadMore>
     </HomeContainer>
@@ -301,7 +314,7 @@ const PokemonListContainer = styled.div`
 `;
 
 const PokemonCard = styled(Link)`
-  display: ${({ hideList }) => (hideList ? "none" : "flex")};
+  display: ${({ hidden }) => (hidden ? "none" : "flex")};
   position: relative;
   text-decoration: none;
   color: white;
@@ -379,7 +392,7 @@ const AlertBox = styled.div`
 `;
 
 const LoadMore = styled.button`
-  display: ${({ loading }) => (loading ? "none" : "block")};
+  display: ${({ loading, hidden }) => (loading || hidden ? "none" : "block")};
   margin: 0 auto;
   padding: 10px 15px;
   border: none;
