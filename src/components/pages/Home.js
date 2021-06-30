@@ -13,13 +13,21 @@ const Home = () => {
     [hideList, setHideList] = useState(false),
     [loading, setLoading] = useState(true),
     [loadMore, setLoadMore] = useState("https://pokeapi.co/api/v2/pokemon"),
-    [bgText, setBgText] = useState([]);
+    [species, setSpecies] = useState([]);
 
-  const getBgText = (result) => {
-    result.forEach((pokemon) => {
-      fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`)
-        .then((res) => res.json())
-        .then((res) => setBgText(res.names && res.names[0]?.name));
+  const getBgText = async (results) => {
+    let promises = [];
+
+    results.forEach((pokemon) => {
+      promises.push(
+        fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`).then(
+          (res) => res.json()
+        )
+      );
+    });
+
+    await Promise.all(promises).then((data) => {
+      setSpecies([...species, ...data]);
     });
   };
 
@@ -112,7 +120,15 @@ const Home = () => {
             }}
             hideList={hideList}
           >
-            <BgText>{bgText}</BgText>
+            {species.map((speciesItem, index) =>
+              speciesItem.name === item.name ? (
+                <BgText key={index}>
+                  {speciesItem.names && speciesItem.names[0].name}
+                </BgText>
+              ) : (
+                ""
+              )
+            )}
             <PokemonImg
               src={item.sprites?.other["official-artwork"]?.front_default}
               alt={item.name}
