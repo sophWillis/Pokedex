@@ -15,41 +15,48 @@ const Home = () => {
     [loadMore, setLoadMore] = useState("https://pokeapi.co/api/v2/pokemon"),
     [bgText, setBgText] = useState([]);
 
-  const getBgText = result => {
-    result.forEach(pokemon => {
+  const getBgText = (result) => {
+    result.forEach((pokemon) => {
       fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`)
-        .then(res => res.json())
-        .then(res => setBgText(res.names[0].name))
+        .then((res) => res.json())
+        .then((res) => setBgText(res.names && res.names[0]?.name));
     });
   };
 
-  const createPokemonObject = result => {
-    result.forEach(pokemon => {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-        .then(res => res.json())
-        .then(res => {
-          setLoading(false);
-          setAllPokemons((currentList) => [...currentList, res]);
-        })
+  const createPokemonObject = async (results) => {
+    let promises = [];
+
+    results.forEach((pokemon) => {
+      promises.push(
+        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`).then((res) =>
+          res.json()
+        )
+      );
+    });
+
+    await Promise.all(promises).then((data) => {
+      setLoading(false);
+      setAllPokemons([...allPokemons, ...data]);
     });
   };
 
   const getAllPokemons = () => {
     setLoading(true);
     fetch(loadMore)
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         setLoadMore(res.next);
         createPokemonObject(res.results);
         getBgText(res.results);
-      })
+      });
   };
 
   const getPokemonByName = () => {
     const toArray = [];
     setLoading(true);
 
-    logic.getPokemonByName(pokemon)
+    logic
+      .getPokemonByName(pokemon)
       .then((res) => {
         res.id && toArray.push(res);
         setLoading(false);
@@ -72,7 +79,7 @@ const Home = () => {
     setError("");
     setPokemon(e.target.value.toLowerCase());
 
-    if (e.target.value == "") {
+    if (e.target.value === "") {
       setHideList(false);
     }
   };
@@ -99,26 +106,28 @@ const Home = () => {
             key={index}
             to={`pokemon/${item.id}`}
             style={{
-              backgroundColor: `${backgroundColors[item.types[0].type.name]}`,
+              backgroundColor: `${
+                backgroundColors[item.types && item.types[0]?.type?.name]
+              }`,
             }}
             hideList={hideList}
           >
             <BgText>{bgText}</BgText>
             <PokemonImg
-              src={item.sprites.other["official-artwork"]?.front_default}
+              src={item.sprites?.other["official-artwork"]?.front_default}
               alt={item.name}
             />
             <PokemonText>
               <PokemonName>{item.name}</PokemonName>
               <PokemonTypes>
-                {item.types.map((item, index) => (
+                {item.types?.map((item, index) => (
                   <Type
                     key={index}
                     style={{
                       backgroundColor: backgroundColors[item.type.name],
                     }}
                   >
-                    {item.type.name}
+                    {item.type?.name}
                   </Type>
                 ))}
               </PokemonTypes>
@@ -136,10 +145,9 @@ const Home = () => {
           key={index}
           to={`pokemon/${item.id}`}
           style={{
-            backgroundColor: `${backgroundColors[
-              item.types && item.types[0] && item.types[0].type.name
-            ]
-              }`,
+            backgroundColor: `${
+              backgroundColors[item.types && item.types[0]?.type?.name]
+            }`,
           }}
         >
           <PokemonImg
@@ -152,9 +160,9 @@ const Home = () => {
               {item.types?.map((item, index) => (
                 <Type
                   key={index}
-                  style={{ backgroundColor: backgroundColors[item.type.name] }}
+                  style={{ backgroundColor: backgroundColors[item.type?.name] }}
                 >
-                  {item.type.name}
+                  {item.type?.name}
                 </Type>
               ))}
             </PokemonTypes>
